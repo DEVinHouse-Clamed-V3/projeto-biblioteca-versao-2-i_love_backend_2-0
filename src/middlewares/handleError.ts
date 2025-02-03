@@ -5,11 +5,11 @@ const handleError = (error: any, request: Request, response: Response, next: Nex
     console.error("Erro capturado pelo middleware", error);
 
     if (error instanceof AppError) {
-        response.status(error.statusCode).json({ error: error.message });
+        response.status(500).json({ error: "Erro interno do servidor" });
         return;
     }
 
-    response.status(500).json({ error: "Erro interno do servidor" });
+    response.status(error.statusCode || 400).json({ error: error.message });
     return;
 }
 

@@ -30,18 +30,21 @@ class ReaderController {
   // Método para listar todos os leitores permitindo filtro por nome
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const query = req.query;
-        const nameFilter = query.name ? `%${String(query.name)}%` : undefined;
+      const query = req.query;
+      const nameFilter = query.name ? `%${String(query.name)}%` : undefined;
 
-        const readers = await this.readerRepository.createQueryBuilder("reader")
-            .where(nameFilter ? "reader.name ILIKE :name" : "1=1", { name: nameFilter })
-            .getMany();
+      const readers = await this.readerRepository
+        .createQueryBuilder("reader")
+        .where(nameFilter ? "reader.name ILIKE :name" : "1=1", {
+          name: nameFilter,
+        })
+        .getMany();
 
-        res.json(readers);
+      res.json(readers);
     } catch (error) {
-        next(error);
+      next(error);
     }
-};
+  };
 
   // Método para buscar um leitor pelo ID
   getById = async (req: Request, res: Response, next: NextFunction) => {
@@ -145,10 +148,11 @@ class ReaderController {
     }
   };
 
-  // Método para buscar os aniversariantes do mês
-  getBirthdays = async (req: Request, res: Response, next: NextFunction) => {
+  // Método para buscar leitores que fazem aniversário no mês atual
+  getBirthdaysThisMonth = async (req: Request,res: Response,next: NextFunction) => {
     try {
-      const currentMonth = new Date().getMonth() + 1;
+      const currentMonth = new Date().getMonth() + 1; 
+
       const readers = await this.readerRepository
         .createQueryBuilder("reader")
         .where("EXTRACT(MONTH FROM reader.birthdate) = :month", {
