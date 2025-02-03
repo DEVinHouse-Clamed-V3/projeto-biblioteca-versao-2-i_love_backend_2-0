@@ -8,6 +8,7 @@ import livroRoutes from "./routes/livro.routes";
 import auditorioRoutes from "./routes/auditorio.routes";
 import autorRoutes from "./routes/autor.routes";
 import leitorRoutes from "./routes/leitor.routes";
+import handleError from "./middlewares/handleError";
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use("/livros", livroRoutes);
 app.use("/auditorios", auditorioRoutes);
 app.use("/autores", autorRoutes);
 app.use("/leitores", leitorRoutes);
+
+app.use(handleError);
 
 app.listen(3333, () => {
   console.log("Servidor rodando na porta 3333");
