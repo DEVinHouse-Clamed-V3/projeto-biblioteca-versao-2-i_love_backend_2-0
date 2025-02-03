@@ -1,23 +1,16 @@
-import { Request, Response } from "express";
+import e, { Request, Response, NextFunction } from "express";
 import { AppDataSource } from "../database/data-source";
-import { Livro } from "../entities/Livro";
-import { AppError } from "../utils/AppError";
+import  Livro  from "../entities/Livro";
+import  AppError  from "../utils/AppError";
 
-export class LivroController {
+class LivroController {
   private livroRepository;
 
   constructor() {
     this.livroRepository = AppDataSource.getRepository(Livro);
+  } 
 
-    this.findAll = this.findAll.bind(this);
-    this.findById = this.findById.bind(this);
-    this.create = this.create.bind(this);
-    this.delete = this.delete.bind(this);
-    this.update = this.update.bind(this);
-    this.findPageCountRanking = this.findPageCountRanking.bind(this);
-  }
-
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       const livroRepository = AppDataSource.getRepository(Livro);
       const {
@@ -41,22 +34,22 @@ export class LivroController {
       await livroRepository.save(livro);
       return res.status(201).json(livro);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      next(error);
     }
   }
 
-  async findAll(req: Request, res: Response) {
+  async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const livroRepository = AppDataSource.getRepository(Livro);
       const livros = await livroRepository.find({});
 
       return res.status(200).json(livros);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      next(error);
     }
   }
 
-  async findById(req: Request, res: Response) {
+  async findById(req: Request, res: Response, next: NextFunction) {
     try {
       const livroRepository = AppDataSource.getRepository(Livro);
       const { id } = req.params;
@@ -71,11 +64,11 @@ export class LivroController {
 
       return res.json(livro);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      next(error);
     }
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
       const livroRepository = AppDataSource.getRepository(Livro);
       const { id } = req.params;
@@ -107,11 +100,11 @@ export class LivroController {
 
       return res.status(201).json(livro);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      next(error);
     }
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response, next: NextFunction) {
     const livroRepository = AppDataSource.getRepository(Livro);
     const { id } = req.params;
 
@@ -126,7 +119,7 @@ export class LivroController {
     return res.status(200).send();
   }
 
-  async findPageCountRanking(req: Request, res: Response) {
+  async findPageCountRanking(req: Request, res: Response, next: NextFunction) {
     try {
       const livroRepository = AppDataSource.getRepository(Livro);
 
@@ -138,7 +131,9 @@ export class LivroController {
 
       return res.status(200).json(livros);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      next(error);
     }
   }
 }
+
+export default LivroController;
